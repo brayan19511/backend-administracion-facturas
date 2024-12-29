@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model AREA {
+  IdArea        Int       @id(map: "PK__AREA__2FC141AA7DDEF8A3") @default(autoincrement())
+  Descripcion   String?   @db.NVarChar(200)
+  FechaCreacion DateTime? @default(now(), map: "DF__AREA__FechaCreac__3C69FB99") @db.DateTime
+  FechaActuali  DateTime? @db.DateTime
+  activo        Boolean?  @default(true, map: "DF__AREA__activo__3E52440B")
+  USUARIO       USUARIO[]
+}
+
+model ROLESUSUARIO {
+  IdRol         Int       @id(map: "PK__ROLESUSU__2A49584CF70D7E2D") @default(autoincrement())
+  Descripcion   String?   @db.NVarChar(200)
+  Rango         Int?
+  FechaCreacion DateTime? @default(now(), map: "DF__ROLESUSUA__Fecha__37A5467C") @db.DateTime
+  FechaActuali  DateTime? @db.DateTime
+  activo        Boolean?  @default(true, map: "DF__ROLESUSUA__activ__398D8EEE")
+  USUARIO       USUARIO[]
+}
+
+model USUARIO {
+  IdUsuario       Int           @id(map: "PK__USUARIO__5B65BF976DE398F6") @default(autoincrement())
+  NombreUsuario   String?       @db.NVarChar(15)
+  Correo          String?       @db.NVarChar(Max)
+  ContraUsuario   String?       @db.NVarChar(200)
+  Identificacion  String?       @unique(map: "UQ__USUARIO__D6F931E5E278F7DD") @db.NVarChar(200)
+  Nombres         String?       @db.NVarChar(200)
+  ApellidoPaterno String?       @db.NVarChar(200)
+  ApellidoMaterno String?       @db.NVarChar(200)
+  IdRol           Int?
+  IdArea          Int?
+  FechaCreacion   DateTime?     @default(now(), map: "DF__USUARIO__FechaCr__4222D4EF") @db.DateTime
+  FechaActuali    DateTime?     @db.DateTime
+  activo          Boolean?      @default(true, map: "DF__USUARIO__activo__440B1D61")
+  ROLESUSUARIO    ROLESUSUARIO? @relation(fields: [IdRol], references: [IdRol], onDelete: NoAction, onUpdate: NoAction, map: "FK__USUARIO__activo__0F624AF8")
+  AREA            AREA?         @relation(fields: [IdArea], references: [IdArea], onDelete: NoAction, onUpdate: NoAction, map: "FK__USUARIO__IdArea__10566F31")
+}
